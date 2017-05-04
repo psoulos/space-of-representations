@@ -4,20 +4,17 @@ from models import BasicModel
 
 slim = tf.contrib.slim
 
-ACTIVATIONS = {'relu': tf.nn.relu,
-               'sigmoid': tf.nn.sigmoid}
 
-
-class FullyConnectedDiscriminator(BasicModel):
+class ConvDiscriminator(BasicModel):
     def build_graph(self, graph):
         with graph.as_default():
             # TODO: MNIST sizes are hard-coded in
             self.x = x = tf.placeholder(tf.float32, [None, 784])
+            x_reshape = tf.reshape(x, [-1, 28, 28, 1])
 
-            net = slim.fully_connected(x, self.hidden_size,
-                                       activation_fn=ACTIVATIONS[self.activation])
-            self.representation = net
-            y = slim.fully_connected(net, 10, activation_fn=None)
+            net = slim.conv2d(x_reshape, self.hidden_size, kernel_size=self.kernel_size)
+            self.representation = slim.flatten(net)
+            y = slim.fully_connected(self.representation, 10, activation_fn=None)
             self.y_ = y_ = tf.placeholder(tf.float32, [None, 10])
 
             self.loss = tf.reduce_mean(

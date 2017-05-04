@@ -23,6 +23,7 @@ class BasicModel(object):
         self.iter_per_epoch = self.config['iter_per_epoch']
         self.activation = self.config['activation']
         self.hidden_size = self.config['hidden_size']
+        self.kernel_size = self.config.get('kernel_size', -1)
         self.learning_rate = self.config['learning_rate']
 
         self.graph = self.build_graph(tf.Graph())
@@ -79,4 +80,4 @@ class BasicModel(object):
         # Save the configuration
         if not os.path.isfile(self.result_dir + '/config.json'):
             with open(self.result_dir + '/config.json', 'w') as f:
-                json.dump(self.config, f)
+                json.dump(self.config, f, sort_keys=True, indent=4, separators=(',', ': '))
