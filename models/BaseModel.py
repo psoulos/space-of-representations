@@ -6,7 +6,7 @@ import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 
 
-class BasicModel(object):
+class BaseModel(object):
     def __init__(self, config):
         self.config = copy.deepcopy(config)
 
@@ -24,7 +24,9 @@ class BasicModel(object):
         self.activation = self.config['activation']
         self.hidden_size = self.config['hidden_size']
         self.kernel_size = self.config.get('kernel_size', -1)
+        self.beta = self.config.get('beta', 1)
         self.learning_rate = self.config['learning_rate']
+        self.num_features = self.config['num_features']
 
         self.graph = self.build_graph(tf.Graph())
         with self.graph.as_default():
@@ -54,18 +56,12 @@ class BasicModel(object):
         print('Start training')
         for epoch in range(self.num_epochs):
             print('Epoch {}'.format(epoch + 1))
-            for it in range(self.iter_per_epoch):
-                # Get batch
-                xs, ys = self.mnist.train.next_batch(100)
-                _, loss, summary = self.sess.run([self.train_op, self.loss, self.summary_op],
-                                                 {self.x: xs, self.y_: ys})
-                self.summary_writer.add_summary(summary, it)
-                if it % 1000 == 0:
-                    acc = self.sess.run(self.accuracy, feed_dict={self.x: self.mnist.test.images,
-                                                                  self.y_: self.mnist.test.labels})
-                    print('Iteration {}'.format(it))
-                    print('Accuracy {}'.format(acc))
+            self.train_epoch()
             self.save()
+
+    def train_epoch(self):
+        """ Trains the model for a single epoch """
+        raise Exception('The train_epoch function must be overriden by the model')
 
     def init(self):
         # Any model specific initialization can go here

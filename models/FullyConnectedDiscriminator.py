@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from models import BasicModel
+from models import BaseDiscriminator
 
 slim = tf.contrib.slim
 
@@ -8,7 +8,7 @@ ACTIVATIONS = {'relu': tf.nn.relu,
                'sigmoid': tf.nn.sigmoid}
 
 
-class FullyConnectedDiscriminator(BasicModel):
+class FullyConnectedDiscriminator(BaseDiscriminator):
     def build_graph(self, graph):
         with graph.as_default():
             # TODO: MNIST sizes are hard-coded in

@@ -1,18 +1,18 @@
 import tensorflow as tf
 
-from models import BasicModel
+from models import BaseDiscriminator
 
 slim = tf.contrib.slim
 
 
-class ConvDiscriminator(BasicModel):
+class ConvDiscriminator(BaseDiscriminator):
     def build_graph(self, graph):
         with graph.as_default():
             # TODO: MNIST sizes are hard-coded in
             self.x = x = tf.placeholder(tf.float32, [None, 784])
             x_reshape = tf.reshape(x, [-1, 28, 28, 1])
 
-            net = slim.conv2d(x_reshape, self.hidden_size, kernel_size=self.kernel_size)
+            net = slim.conv2d(x_reshape, self.num_features, kernel_size=self.kernel_size)
             self.representation = slim.flatten(net)
             y = slim.fully_connected(self.representation, 10, activation_fn=None)
             self.y_ = y_ = tf.placeholder(tf.float32, [None, 10])
