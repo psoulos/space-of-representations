@@ -47,7 +47,9 @@ class BaseModel(object):
             self.sess.run(self.init_op)
         else:
             print('Loading the model from folder: %s' % self.checkpoint_dir)
-            self.saver.restore(self.sess, checkpoint.model_checkpoint_path)
+            # TODO: model path should be relative
+            model_path = checkpoint.model_checkpoint_path.replace('/home/ubuntu/space-of-representations/results', '/home/psoulos/workspace/space-of-representations/aws-results')
+            self.saver.restore(self.sess, model_path)
 
     def build_graph(self, graph):
         raise Exception('The build_graph function must be overriden by the model')
